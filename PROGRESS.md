@@ -3,8 +3,8 @@
 ## Latest Update
 
 **Date**: 2025-11-01
-**Status**: Phase 1 Complete, Ready for Deployment
-**Progress**: 25% (1/4 phases complete)
+**Status**: Phase 1 Complete, DEPLOYED TO PRODUCTION ✅
+**Progress**: 30% (1/4 phases complete + deployment)
 
 ---
 
@@ -16,13 +16,20 @@
 3. ✅ API routes and cron jobs
 4. ✅ Build system configuration
 5. ✅ Documentation suite
+6. ✅ **Production deployment to Vercel**
+7. ✅ **Database setup (Upstash KV + Neon Postgres)**
+8. ✅ **Environment variables configuration**
+9. ✅ **Custom domain configuration (trading-agent.mindweave.tech)**
 
 ### Achievements
 - **Lines of Code**: ~2,000+ TypeScript/React
-- **API Endpoints**: 8 functional routes
+- **API Endpoints**: 8 functional routes (2 working, 2 require MCP fix)
 - **Cron Jobs**: 3 scheduled tasks
 - **Documentation**: 6 comprehensive files
 - **Build Status**: ✅ Successful production build
+- **Deployment**: ✅ Live at https://trading-agent.mindweave.tech
+- **Storage**: ✅ Upstash Redis KV + Neon Postgres configured
+- **Environment**: ✅ All environment variables set
 
 ### Files Created
 ```
@@ -195,16 +202,20 @@ Shared by all: 87.2 kB
 ## Deployment Status
 
 ### Vercel
-- **Status**: Not yet deployed
-- **Next Step**: `vercel --prod`
-- **Domain**: tradingagent.mindweave.tech (to be configured)
+- **Status**: DEPLOYED ✅
+- **Production URL**: https://trading-agent-mindweave.vercel.app
+- **Domain**: trading-agent.mindweave.tech
 
 ### Environment Setup
-- [ ] Vercel KV (trading cache)
-- [ ] Vercel Postgres (historical data)
-- [ ] Environment variables
-- [ ] Cron jobs configuration
-- [ ] Custom domain
+- [x] ✅ Upstash KV (trading cache) - cool-glowworm-16406
+- [x] ✅ Neon Postgres (historical data) - ep-young-dawn-a1jeewqr
+- [x] ✅ Environment variables (22 configured)
+  - KV_URL, KV_REST_API_URL, KV_REST_API_TOKEN
+  - POSTGRES_URL, POSTGRES_PRISMA_URL, DATABASE_URL
+  - ZERODHA_MCP_URL (https://mcp.kite.trade/mcp)
+  - PAPER_CAPITAL (100000)
+- [x] ✅ Cron jobs configuration (vercel.json)
+- [x] ✅ Custom domain (trading-agent.mindweave.tech)
 
 ---
 
@@ -213,9 +224,12 @@ Shared by all: 87.2 kB
 ### Manual Testing
 - [x] Local build successful
 - [x] Type checking passed
-- [ ] API endpoints (requires deployment)
-- [ ] Cron jobs (requires deployment)
-- [ ] UI rendering (requires deployment)
+- [x] ✅ Homepage rendering (https://trading-agent.mindweave.tech)
+- [x] ✅ /api/risk endpoint (200 OK)
+- [x] ✅ /api/report endpoint (200 OK)
+- [x] ⚠️ /api/mcp endpoint (500 - MCP WebSocket/HTTP mismatch)
+- [x] ⚠️ /api/signals endpoint (500 - depends on MCP)
+- [ ] Cron jobs (scheduled, not yet triggered)
 
 ### Automated Testing
 - [ ] Unit tests (not yet implemented)
@@ -227,12 +241,15 @@ Shared by all: 87.2 kB
 ## Known Issues
 
 ### Critical
-None
+1. ⚠️ **MCP WebSocket/HTTP Mismatch**: lib/mcp-client.ts uses WebSocket but Zerodha MCP is HTTPS
+   - Impact: /api/mcp and /api/signals endpoints failing (500 errors)
+   - Fix Required: Update MCP client to use HTTP/fetch instead of WebSocket
 
 ### Non-Critical
 1. Dashboard UI is placeholder (awaiting Phase 2)
 2. No authentication (planned for production)
 3. Email reports not configured (optional feature)
+4. Custom domain SSL still provisioning (use Vercel URL for now)
 
 ### Technical Debt
 1. Add comprehensive error handling
@@ -251,6 +268,8 @@ None
 3. ✅ Set environment variables
 4. ✅ Test API endpoints in production
 5. ✅ Verify cron jobs scheduling
+6. 🔄 **Fix MCP WebSocket/HTTP mismatch** (PRIORITY)
+7. 🔄 **Implement User Story 1: Trading Dashboard**
 
 ### Short Term (Week 1-2)
 1. Build `/api/positions` endpoints
@@ -312,8 +331,8 @@ None
 ## Resources
 
 ### Links
-- Repository: (to be created)
-- Deployment: tradingagent.mindweave.tech (pending)
+- Repository: /Users/grao/Projects/trading-agent
+- Deployment: https://trading-agent.mindweave.tech
 - Documentation: README.md, USER_STORIES.md
 - Company: https://mindweave.tech
 
@@ -326,6 +345,16 @@ None
 ---
 
 ## Changelog
+
+### 2025-11-01 - Production Deployment
+- ✅ Deployed to Vercel production
+- ✅ Configured Upstash Redis KV (cool-glowworm-16406)
+- ✅ Configured Neon Postgres (ep-young-dawn-a1jeewqr)
+- ✅ Set 22 environment variables
+- ✅ Custom domain: trading-agent.mindweave.tech
+- ✅ Tested API endpoints (2/4 working)
+- ⚠️ Identified MCP WebSocket/HTTP mismatch issue
+- 📝 Updated documentation with deployment URLs
 
 ### 2025-11-01 - Initial Build
 - Created project structure

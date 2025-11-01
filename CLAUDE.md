@@ -3,7 +3,7 @@
 ## Project Overview
 
 **Organization**: Mindweave Technologies Pvt. Ltd.
-**Deployment**: `tradingagent.mindweave.tech`
+**Deployment**: `trading-agent.mindweave.tech`
 **Stack**: Next.js 14, Vercel Edge Functions, TypeScript, TensorFlow.js
 **Purpose**: AI-powered trading analysis system with Zerodha MCP integration
 

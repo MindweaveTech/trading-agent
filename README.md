@@ -1,6 +1,6 @@
 # AI Trading Agent - Zerodha MCP Integration
 
-> **Deployment**: `tradingagent.mindweave.tech`
+> **Deployment**: `trading-agent.mindweave.tech`
 > **Organization**: Mindweave Technologies Pvt. Ltd.
 
 A serverless AI-powered trading analysis system built with Next.js 14 and Vercel Edge Functions. Validates trading strategies using live market data from Zerodha MCP server without executing real trades.
@@ -141,7 +141,7 @@ trading-agent/
 
 **GET** - Fetch real-time quotes
 ```bash
-curl "https://tradingagent.mindweave.tech/api/mcp?symbols=RELIANCE,TCS"
+curl "https://trading-agent.mindweave.tech/api/mcp?symbols=RELIANCE,TCS"
 ```
 
 Response:
@@ -164,7 +164,7 @@ Response:
 
 **GET** - Generate trading signals
 ```bash
-curl "https://tradingagent.mindweave.tech/api/signals"
+curl "https://trading-agent.mindweave.tech/api/signals"
 ```
 
 Response:
@@ -188,14 +188,14 @@ Response:
 
 **GET** - Get portfolio risk metrics
 ```bash
-curl "https://tradingagent.mindweave.tech/api/risk"
+curl "https://trading-agent.mindweave.tech/api/risk"
 ```
 
 ### Performance Report (`/api/report`)
 
 **GET** - Generate comprehensive performance report
 ```bash
-curl "https://tradingagent.mindweave.tech/api/report"
+curl "https://trading-agent.mindweave.tech/api/report"
 ```
 
 ## Trading Strategies
@@ -380,7 +380,7 @@ Proprietary - Mindweave Technologies Pvt. Ltd.
 
 ## Links
 
-- **Deployment**: https://tradingagent.mindweave.tech (to be configured)
+- **Deployment**: https://trading-agent.mindweave.tech
 - **Company**: https://mindweave.tech
 - **Vercel Docs**: https://vercel.com/docs
 - **Next.js Docs**: https://nextjs.org/docs
