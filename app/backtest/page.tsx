@@ -1,28 +1,17 @@
 import Backtester from '@/components/Backtester';
-import Link from 'next/link';
 
 export default function BacktestPage() {
   return (
     <main className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Strategy Backtesting
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Test your trading strategies on historical data to validate performance
-                before deploying them live
-              </p>
-            </div>
-            <Link
-              href="/dashboard"
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Back to Dashboard
-            </Link>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Strategy Backtesting
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Test your trading strategies on historical data to validate performance
+            before deploying them live
+          </p>
         </div>
 
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
