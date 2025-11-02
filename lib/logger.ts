@@ -76,36 +76,6 @@ const combinedRotateTransport = new DailyRotateFile({
   json: true,
 });
 
-// Custom stream for line counting and rotation at 5000 lines
-let errorLineCount = 0;
-let combinedLineCount = 0;
-const MAX_LINES = 5000;
-
-// Wrap transports to count lines
-const countingErrorTransport = {
-  ...errorRotateTransport,
-  log: (info: any, callback: any) => {
-    errorLineCount++;
-    if (errorLineCount >= MAX_LINES) {
-      errorRotateTransport.rotate();
-      errorLineCount = 0;
-    }
-    errorRotateTransport.log(info, callback);
-  }
-};
-
-const countingCombinedTransport = {
-  ...combinedRotateTransport,
-  log: (info: any, callback: any) => {
-    combinedLineCount++;
-    if (combinedLineCount >= MAX_LINES) {
-      combinedRotateTransport.rotate();
-      combinedLineCount = 0;
-    }
-    combinedRotateTransport.log(info, callback);
-  }
-};
-
 // Create logger instance
 const logger = winston.createLogger({
   level: level(),
@@ -146,12 +116,10 @@ const logger = winston.createLogger({
 // Rotate logs daily at midnight
 errorRotateTransport.on('rotate', (oldFilename, newFilename) => {
   logger.info(`Error log rotated: ${oldFilename} -> ${newFilename}`);
-  errorLineCount = 0;
 });
 
 combinedRotateTransport.on('rotate', (oldFilename, newFilename) => {
   logger.info(`Combined log rotated: ${oldFilename} -> ${newFilename}`);
-  combinedLineCount = 0;
 });
 
 // Utility function to create child loggers with context
