@@ -26,7 +26,8 @@
       "Bash(curl:*)",
       "mcp__playwright__playwright_click",
       "Bash(./scripts/restart_server.sh:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__playwright__playwright_go_back"
     ],
     "deny": [],
     "ask": []

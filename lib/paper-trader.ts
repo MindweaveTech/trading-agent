@@ -1,10 +1,13 @@
 /**
  * Paper Trading System
  * Simulates trades without real capital
+ * Falls back to in-memory storage when KV is not available
  */
 
 import { kv } from '@vercel/kv';
 import { TradingSignal } from './strategies';
+import { mockPositions, mockClosedTrades } from './mock-data';
+import logger from './logger';
 
 export interface Position {
   id: string;
@@ -40,27 +43,50 @@ export interface Portfolio {
   lastUpdated: Date;
 }
 
+// In-memory storage fallback for local development
+let memoryPortfolio: Portfolio | null = null;
+
 export class PaperTrader {
   private initialCapital: number;
+  private useMemory: boolean = false;
 
   constructor(initialCapital: number = 100000) {
     this.initialCapital = initialCapital;
+    // Check if KV is available
+    this.useMemory = !process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN;
+    if (this.useMemory) {
+      logger.info('Paper Trader using in-memory storage (KV not configured)');
+    }
   }
 
   /**
    * Initialize portfolio
    */
   async initializePortfolio(): Promise<Portfolio> {
+    // Use mock positions for local development
+    const mockOpenPositions = this.useMemory ? mockPositions : [];
+
+    const mockClosed = this.useMemory ? mockClosedTrades : [];
+
+    const totalPnL = mockClosed.reduce((sum, t) => sum + t.pnl, 0);
+
     const portfolio: Portfolio = {
       capital: this.initialCapital,
-      positions: [],
+      positions: [...mockOpenPositions, ...mockClosed],
       trades: [],
-      totalPnL: 0,
-      winRate: 0,
+      totalPnL,
+      winRate: mockClosed.length > 0
+        ? (mockClosed.filter(t => t.result === 'WIN').length / mockClosed.length) * 100
+        : 0,
       lastUpdated: new Date(),
     };
 
-    await kv.set('portfolio', portfolio);
+    if (this.useMemory) {
+      memoryPortfolio = portfolio;
+      logger.info('Initialized mock portfolio with sample data');
+    } else {
+      await kv.set('portfolio', portfolio);
+    }
     return portfolio;
   }
 
@@ -68,11 +94,24 @@ export class PaperTrader {
    * Get current portfolio
    */
   async getPortfolio(): Promise<Portfolio> {
-    const portfolio = await kv.get<Portfolio>('portfolio');
-    if (!portfolio) {
+    if (this.useMemory) {
+      if (!memoryPortfolio) {
+        return this.initializePortfolio();
+      }
+      return memoryPortfolio;
+    }
+
+    try {
+      const portfolio = await kv.get<Portfolio>('portfolio');
+      if (!portfolio) {
+        return this.initializePortfolio();
+      }
+      return portfolio;
+    } catch (error) {
+      logger.error('Failed to get portfolio from KV, using memory fallback', error);
+      this.useMemory = true;
       return this.initializePortfolio();
     }
-    return portfolio;
   }
 
   /**
@@ -248,6 +287,18 @@ export class PaperTrader {
       openPositions: portfolio.positions.filter((p) => p.status === 'OPEN')
         .length,
     };
+  }
+
+  /**
+   * Update portfolio (save to KV or memory)
+   */
+  async updatePortfolio(portfolio: Portfolio): Promise<void> {
+    portfolio.lastUpdated = new Date();
+    if (this.useMemory) {
+      memoryPortfolio = portfolio;
+    } else {
+      await kv.set('portfolio', portfolio);
+    }
   }
 
   /**
