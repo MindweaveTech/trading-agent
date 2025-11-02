@@ -63,7 +63,6 @@ const errorRotateTransport = new DailyRotateFile({
   datePattern: 'YYYY-MM-DD',
   level: 'error',
   maxFiles: '30d', // Keep logs for 30 days
-  maxSize: null, // Use maxLines instead
   format: logFormat,
   json: true,
 });
@@ -73,7 +72,6 @@ const combinedRotateTransport = new DailyRotateFile({
   filename: path.join(process.cwd(), 'logs', 'combined-%DATE%.log'),
   datePattern: 'YYYY-MM-DD',
   maxFiles: '30d', // Keep logs for 30 days
-  maxSize: null, // Use maxLines instead
   format: logFormat,
   json: true,
 });
