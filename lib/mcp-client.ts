@@ -3,10 +3,12 @@
  * Handles HTTP connection to Zerodha MCP server for real-time market data
  * Updated to use HTTP/fetch instead of WebSocket
  * Falls back to mock data when authentication is unavailable
+ * Supports Kite Connect OAuth authentication
  */
 
 import logger from './logger';
 import { generateMockQuotes, generateMockHistoricalData, isMockMode, logMockUsage } from './mock-data';
+import { getKiteAuth } from './kite-auth';
 
 export interface Quote {
   symbol: string;
@@ -48,15 +50,28 @@ export class MCPClient {
     try {
       logger.debug('MCP Request', { endpoint, payload, attempt });
 
+      // Get access token from Kite auth if available
+      const kiteAuth = getKiteAuth();
+      const accessToken = await kiteAuth.getAccessTokenForAPI();
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      // Add authorization header if we have an access token
+      if (accessToken) {
+        headers['Authorization'] = `token ${process.env.KITE_API_KEY}:${accessToken}`;
+        headers['X-Kite-Version'] = '3';
+        logger.debug('Using Kite OAuth access token for MCP request');
+      }
+
       const response = await fetch(requestUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers,
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
