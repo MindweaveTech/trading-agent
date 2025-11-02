@@ -32,3 +32,10 @@ next-env.d.ts
 .idea
 *.swp
 *.swo
+
+# Logs
+logs/
+*.log
+
+# Server PID
+.server.pid

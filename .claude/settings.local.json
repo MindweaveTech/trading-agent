@@ -17,7 +17,11 @@
       "Bash(vercel env ls:*)",
       "mcp__playwright__playwright_close",
       "Bash(vercel help:*)",
-      "Bash(vercel env add:*)"
+      "Bash(vercel env add:*)",
+      "Bash(git push:*)",
+      "Bash(./scripts/stop_server.sh:*)",
+      "Bash(./scripts/start_server.sh:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
