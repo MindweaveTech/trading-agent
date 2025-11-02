@@ -19,12 +19,17 @@ interface RiskData {
 interface ReportData {
   success: boolean;
   report: {
-    totalTrades: number;
-    winRate: number;
-    totalPnL: number;
-    avgPnL: number;
-    bestTrade: { pnl: number };
-    worstTrade: { pnl: number };
+    summary: {
+      totalTrades: number;
+      winRate: number;
+      totalPnL: number;
+      currentValue: number;
+      initialCapital: number;
+    };
+    recentTrades: Array<{
+      pnl: number;
+      symbol: string;
+    }>;
   };
 }
 
@@ -40,8 +45,20 @@ export default function PerformanceMetrics() {
   });
 
   const metrics = riskData?.risk?.metrics;
-  const report = reportData?.report;
+  const report = reportData?.report?.summary;
+  const recentTrades = reportData?.report?.recentTrades || [];
   const riskLevel = riskData?.risk?.level || 'LOW';
+
+  // Calculate best and worst trades from recent trades
+  const bestTrade = recentTrades.length > 0
+    ? recentTrades.reduce((max, trade) => trade.pnl > max.pnl ? trade : max, recentTrades[0])
+    : { pnl: 0 };
+  const worstTrade = recentTrades.length > 0
+    ? recentTrades.reduce((min, trade) => trade.pnl < min.pnl ? trade : min, recentTrades[0])
+    : { pnl: 0 };
+  const avgPnL = recentTrades.length > 0
+    ? recentTrades.reduce((sum, trade) => sum + trade.pnl, 0) / recentTrades.length
+    : 0;
 
   const riskColors = {
     LOW: 'bg-green-100 text-green-700 border-green-200',
@@ -116,8 +133,10 @@ export default function PerformanceMetrics() {
       <MetricCard
         title="Best Trade"
         value={
-          report
-            ? `+₹${report.bestTrade.pnl.toFixed(2)}`
+          report && recentTrades.length > 0
+            ? `+₹${bestTrade.pnl.toFixed(2)}`
+            : recentTrades.length === 0
+            ? 'No trades'
             : 'Loading...'
         }
         subtitle="Highest profit"
@@ -128,8 +147,10 @@ export default function PerformanceMetrics() {
       <MetricCard
         title="Worst Trade"
         value={
-          report
-            ? `₹${report.worstTrade.pnl.toFixed(2)}`
+          report && recentTrades.length > 0
+            ? `₹${worstTrade.pnl.toFixed(2)}`
+            : recentTrades.length === 0
+            ? 'No trades'
             : 'Loading...'
         }
         subtitle="Highest loss"
@@ -140,14 +161,16 @@ export default function PerformanceMetrics() {
       <MetricCard
         title="Avg P&L"
         value={
-          report
-            ? `${report.avgPnL >= 0 ? '+' : ''}₹${report.avgPnL.toFixed(2)}`
+          report && recentTrades.length > 0
+            ? `${avgPnL >= 0 ? '+' : ''}₹${avgPnL.toFixed(2)}`
+            : recentTrades.length === 0
+            ? 'No trades'
             : 'Loading...'
         }
         subtitle="Per trade"
         valueColor={
-          report
-            ? report.avgPnL >= 0
+          recentTrades.length > 0
+            ? avgPnL >= 0
               ? 'text-green-600'
               : 'text-red-600'
             : 'text-gray-600'

@@ -7,6 +7,7 @@ import PerformanceMetrics from '@/components/PerformanceMetrics';
 import ActivePositions from '@/components/ActivePositions';
 import TradeHistory from '@/components/TradeHistory';
 import AuthStatus from '@/components/AuthStatus';
+import AIForecast from '@/components/AIForecast';
 
 export default function Dashboard() {
   return (
@@ -26,6 +27,11 @@ export default function Dashboard() {
         {/* Performance Metrics */}
         <section>
           <PerformanceMetrics />
+        </section>
+
+        {/* AI Forecast */}
+        <section className="bg-white rounded-lg p-6 shadow-sm">
+          <AIForecast />
         </section>
 
         {/* Active Positions */}
