@@ -37,5 +37,8 @@ next-env.d.ts
 logs/
 *.log
 
+# Screenshots
+screenshots/
+
 # Server PID
 .server.pid
