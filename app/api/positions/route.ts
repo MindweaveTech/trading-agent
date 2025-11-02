@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     if (status === 'OPEN' || !status) {
       const openPositions = positions.filter(p => p.status === 'OPEN');
       if (openPositions.length > 0) {
-        const symbols = [...new Set(openPositions.map(p => p.symbol))];
+        const symbols = Array.from(new Set(openPositions.map(p => p.symbol)));
         const mcpClient = getMCPClient();
 
         try {
